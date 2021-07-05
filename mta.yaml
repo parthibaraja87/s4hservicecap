@@ -1,53 +1,117 @@
-_schema-version: '3.1'
+_schema-version: "3.1"
 ID: caps4h
-version: 1.0.0
 description: A simple CAP project.
+version: 1.0.0
+modules:
+- name: caps4h-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: caps4h_connectivity
+  - name: caps4h-destination-service
+  - name: uaa_caps4h
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+- name: caps4h-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: caps4h-destination-service
+    parameters:
+      content-target: true
+  - name: caps4h_html_repo_host
+    parameters:
+      service-key:
+        name: caps4h_html_repo_host-key
+  - name: uaa_caps4h
+    parameters:
+      service-key:
+        name: uaa_caps4h-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: customerportal_caps4h_html_repo_host
+          ServiceInstanceName: caps4h-html5-app-host-service
+          ServiceKeyName: caps4h_html_repo_host-key
+          sap.cloud.service: customerportal
+        - Authentication: OAuth2UserTokenExchange
+          Name: customerportal_uaa_caps4h
+          ServiceInstanceName: caps4h-xsuaa-service
+          ServiceKeyName: uaa_caps4h-key
+          sap.cloud.service: customerportal
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: caps4h-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: caps4h_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - project1.zip
+      name: project1
+      target-path: resources/
+- name: project1
+  type: html5
+  path: app/project1
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: caps4h_connectivity
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: connectivity
+    service-name: caps4h-connectivity-service
+    service-plan: lite
+- name: caps4h-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: caps4h-destination-service
+    service-plan: lite
+- name: uaa_caps4h
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: caps4h-xsuaa-service
+    service-plan: application
+- name: caps4h_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: caps4h-html5-app-host-service
+    service-plan: app-host
 parameters:
+  deploy_mode: html5-repo
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-    - builder: custom
-      commands:
-        - npm install --production
-        - npx -p @sap/cds-dk cds build --production
-modules:
-  - name: caps4h-srv
-    type: nodejs
-    path: gen/srv
-    requires:
-    - name: caps4h_connectivity
-    - name: caps4h-destination-service
-    - name: uaa_caps4h
-    provides:
-      - name: srv-api
-        properties:
-          srv-url: '${default-url}'
-resources:
-  #-- Connectivity instance
-  - name: caps4h_connectivity
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: connectivity
-      service-name: caps4h-connectivity-service
-      service-plan: lite
-
-  #-- Destination instance
-  - name: caps4h-destination-service
-    type: org.cloudfoundry.managed-service
-    parameters:
-      config:
-        HTML5Runtime_enabled: true
-        version: 1.0.0
-      service: destination
-      service-name: caps4h-destination-service
-      service-plan: lite
-
-  #-- uaa instance
-  - name: uaa_caps4h
-    type: org.cloudfoundry.managed-service
-    parameters:
-      path: ./xs-security.json
-      service: xsuaa
-      service-name: caps4h-xsuaa-service
-      service-plan: application
-
+  - builder: custom
+    commands:
+    - npm install --production
+    - npx -p @sap/cds-dk cds build --production

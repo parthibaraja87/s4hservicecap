@@ -1,0 +1,1 @@
+using equipment as service from '../../srv/service';
