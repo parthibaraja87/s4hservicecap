@@ -1,4 +1,3 @@
-const cds = require('@sap/cds');
 const core = require('@sap-cloud-sdk/core');
 
 let getEquipment = async  () => {
@@ -11,8 +10,7 @@ let getEquipment = async  () => {
         }
     });
     
-    let result = JSON.stringify(response.data);
-    console.log(result);
+    let result = response.data.d.results;
     return result;
 }
 

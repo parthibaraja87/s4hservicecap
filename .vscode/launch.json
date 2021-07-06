@@ -14,7 +14,7 @@
       ]
     },
     {
-      "name": "Run caps4h-1",
+      "name": "Run s4hservicecap-3",
       "request": "launch",
       "type": "node",
       "cwd": "${workspaceFolder}",
@@ -33,10 +33,10 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "envFile": "${workspaceFolder}/.env1",
+      "envFile": "${workspaceFolder}/.env3",
       "env": {
         "NODE_ENV": "development",
-        "run.config": "{\"handlerId\":\"cap_run_config_handler_id\",\"runnableId\":\"{\\\"projectPath\\\":\\\"/home/user/projects/caps4h\\\",\\\"profileName\\\":\\\"development\\\"}\"}"
+        "run.config": "{\"handlerId\":\"cap_run_config_handler_id\",\"runnableId\":\"{\\\"projectPath\\\":\\\"/home/user/projects/s4hservicecap\\\",\\\"profileName\\\":\\\"development\\\"}\"}"
       }
     }
   ]

@@ -77,6 +77,8 @@ resources:
     service-plan: lite
 - name: caps4h-destination-service
   type: org.cloudfoundry.managed-service
+  requires:
+    - name: srv-api
   parameters:
     config:
       HTML5Runtime_enabled: true
@@ -84,10 +86,12 @@ resources:
         instance:
           destinations:
           - Authentication: NoAuthentication
-            Name: ui5
+            HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
+            Name: caps4h-srv-api
             ProxyType: Internet
             Type: HTTP
-            URL: https://ui5.sap.com
+            URL: ~{srv-api/srv-url}
           existing_destinations_policy: update
       version: 1.0.0
     service: destination
