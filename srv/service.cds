@@ -3,5 +3,6 @@ type response {
 };
  
 service equipment {
-    function getEquipmentData() returns response ;
+    function getEquipmentData() returns response;
+    function getEquipmentPartner(Partner : String) returns response;
 };
