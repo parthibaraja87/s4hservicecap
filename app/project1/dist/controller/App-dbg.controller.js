@@ -17,19 +17,43 @@ sap.ui.define([
 
             fnGetEquipmentDetails: function () {
                 var self = this;
+                sap.ui.core.BusyIndicator.show();
                 var fnSuccess = function (oData) {
-                    console.log(oData.getEquipmentData.data);
+                    sap.ui.core.BusyIndicator.hide();
                     self.EquipmentModel.setProperty("/Equipment", oData.getEquipmentData.data);
                     self.EquipmentModel.refresh();
                     self.EquipmentModel.updateBindings();
                 };
                 var fnError = function (err) {
+                    sap.ui.core.BusyIndicator.hide();
                     MessageBox.error(err);
                 };
                 this.oDataModel.callFunction("/getEquipmentData", {
                     method: "GET",
                     success: fnSuccess,
                     error: fnError
+                });
+            },
+            onFilterPressed: function () {
+                   var self = this;
+                   sap.ui.core.BusyIndicator.show();
+                var fnSuccess = function (oData) {
+                    sap.ui.core.BusyIndicator.hide();
+                    self.EquipmentModel.setProperty("/Equipment", oData.getEquipmentPartner.data);
+                    self.EquipmentModel.refresh();
+                    self.EquipmentModel.updateBindings();
+                };
+                var fnError = function (err) {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error(err);
+                };
+                this.oDataModel.callFunction("/getEquipmentPartner", {
+                    method: "GET",
+                    success: fnSuccess,
+                    error: fnError,
+                    urlParameters: {
+							Partner: "C123"
+						}
                 });
             }
 

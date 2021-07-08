@@ -10,6 +10,11 @@
 				<Page id="page" title="{i18n>title}">
 					<content>
                      <Table items="{path: 'EquipmentModel>/Equipment'}">
+                        <headerToolbar>
+			               <OverflowToolbar>
+				            <Button text="Filter" press=".onFilterPressed"/>
+			               </OverflowToolbar>
+		                </headerToolbar>
                         <columns>
                             <Column>
                                 <Text text="Equipment" />
